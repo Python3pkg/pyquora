@@ -1,17 +1,32 @@
-language: python
+os:
+  - linux
 python:
-  - "2.6"
   - "2.7"
+  - "3.6"
+  - "nightly" 
   - "pypy"
 
 branches:
   only:
     - master
 
+
+before_install:
+  # Show build setup
+  - uname -a
+  - cat /etc/os-release
+  - pwd
+  - free -tm
+  - python --version
+  - git --version
+  - pip install -r requirements.txt
+  - pip install -r requirements-dev.txt
+
+
 # install dependencies
 install:
-  - "pip install -r requirements.txt"
-  - "pip install -r requirements-dev.txt"
+  - python setup.py install
+  - python setup.py test
 
 # run tests
 script: 
@@ -24,7 +39,10 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
 
 # email notifications
+
 notifications:
   email:
-    on_success: never
-    on_failure: never
+    recipients:
+      - ralic.lo.eng@ieee.org
+    on_success: always # default: change
+    on_failure: never # default: always
